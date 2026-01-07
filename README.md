@@ -79,7 +79,7 @@ A working Webcam (For Emotion AI and Video Calls)
 2.Clone the Repository
 Open your terminal or command prompt and run:
 
-git clone (https://github.com/YourUsername/Medicare-AI.git)
+git clone (https://github.com/Dhanush9972/Medicare-AI.git)
 cd Medicare-AI
 
 3. Create a Virtual Environment (Optional but Recommended)
