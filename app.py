@@ -695,4 +695,9 @@ def create_demo_accounts():
 if __name__ == '__main__':
     with app.app_context():
         create_demo_accounts()
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    
+    # Read the dynamic port assigned by Render, defaulting to 5000 if running locally
+    port = int(os.environ.get("PORT", 5000))
+    
+    # Run socketio binding to 0.0.0.0 and using the assigned port
+    socketio.run(app, host='0.0.0.0', port=port, debug=False, allow_unsafe_werkzeug=True)
