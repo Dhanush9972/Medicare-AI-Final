@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drug Sentiment Analysis & Recommendation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: #ecf0f1;
+        }
+        .container {
+            max-width: 700px;
+            background: #34495e;
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        #accuracy-info-top {
+            text-align: center;
+            font-size: 1em;
+            font-weight: bold;
+            color: #f1c40f;
+            margin-bottom: 20px;
+        }
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        form select, form textarea, form input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background: #ecf0f1;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+        form button {
+            width: 100%;
+            padding: 15px;
+            background: #e74c3c;
+            border: none;
+            border-radius: 5px;
+            color: #ecf0f1;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        form button:hover {
+            background: #c0392b;
+        }
+        .result-box {
+            margin-top: 30px;
+            background: #1abc9c;
+            padding: 20px;
+            border-radius: 8px;
+            color: #2c3e50;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .result-box h2 {
+            margin-top: 0;
+        }
+        .info {
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Drug Sentiment Analysis & Recommendation</h1>
+        <div id="accuracy-info-top" style="display: none;"></div>
+
+        <form id="sentiment-form">
+            <label for="drug">Select Drug (Required):</label>
+            <select id="drug" name="drug_id" required>
+                {% for drug in drugs %}
+                    <option value="{{ drug.id }}">{{ drug.name }} (Rating: {{ drug.rating }})</option>
+                {% endfor %}
+            </select>
+
+            <label for="text">Enter Your Query (Required):</label>
+            <textarea id="text" name="text" rows="4" placeholder="Describe your feelings about the drug..." required></textarea>
+
+            <label for="pain">Describe Your Pain/Problem (Required):</label>
+            <input type="text" id="pain" name="pain" placeholder="e.g., headache, back pain" required>
+
+            <button type="submit">Analyze & Recommend</button>
+        </form>
+
+        <div class="result-box" id="result" style="display: none;">
+            <h2>Prediction & Recommendation</h2>
+            <div id="prediction-result"></div>
+            <div id="probability-result" class="info"></div>
+            <div id="recommendation" class="info" style="margin-top: 10px; font-weight: bold;"></div>
+            <div id="pain-input" class="info"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('sentiment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var drugSelect = document.getElementById('drug');
+            var selectedDrugId = drugSelect.value;
+            var text = document.getElementById('text').value;
+            var pain = document.getElementById('pain').value;
+
+            var payload = {
+                'drug_id': selectedDrugId,
+                'text': text,
+                'pain': pain
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('prediction-result').innerHTML = "<strong>Predicted Sentiment:</strong> " + data.predicted_label;
+
+                let probs = "";
+                for (const [label, prob] of Object.entries(data.probabilities)) {
+                    probs += label + ": " + prob + "<br>";
+                }
+                document.getElementById('probability-result').innerHTML = "<strong>Probabilities:</strong><br>" + probs;
+
+                document.getElementById('recommendation').innerHTML = "Recommendation: " + data.recommendation;
+                document.getElementById('pain-input').innerHTML = "Pain/Problem: " + data.pain_description;
+
+                const accuracyInfoTop = `<strong>Confidence Score:</strong> ${data.confidence_score} |
+                                         <strong>Module Accuracy Level:</strong> ${data.accuracy_level}`;
+                const accuracyDiv = document.getElementById('accuracy-info-top');
+                accuracyDiv.style.display = 'block';
+                accuracyDiv.innerHTML = accuracyInfoTop;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = "An error occurred during prediction.";
+            });
+        });
+    </script>
+</body>
+</html>

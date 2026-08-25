@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Patient Logs{% endblock %}
+{% block content %}
+
+<div class="glass-container">
+    <h2 class="text-gradient">📂 Patient Health Journals</h2>
+    <p style="color: #64748b; margin-bottom: 30px;">
+        Click on a patient to view their daily submissions.
+    </p>
+
+    <div class="grid-3">
+        {% for p in patients %}
+        <div class="feature-card">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                <div style="font-size: 2rem; background: #e0f2fe; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">👤</div>
+                <div>
+                    <h3 style="margin: 0; color: #1e40af;">{{ p.full_name }}</h3>
+                    <small style="color: #64748b;">ID: #{{ p.id }}</small>
+                </div>
+            </div>
+            
+            <p><strong>Last Entry:</strong> {{ p.last_log }}</p>
+            
+            <a href="{{ url_for('view_patient_log', id=p.id) }}" class="btn btn-primary btn-block" style="margin-top: 15px; text-align: center;">
+                View History
+            </a>
+        </div>
+        {% else %}
+        <div class="alert alert-info" style="grid-column: 1 / -1;">
+            No patient logs found. Patients need to submit a "Daily Health Check-in" first.
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+    </div>
+</div>
+
+{% endblock %}

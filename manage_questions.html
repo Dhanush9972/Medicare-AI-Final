@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Manage Inquiries{% endblock %}
+{% block content %}
+
+<h2 style="color: var(--primary-dark); margin-bottom: 30px;">🩺 Patient Inquiry Portal</h2>
+
+<div class="grid-2">
+    <div>
+        <h3 style="color: var(--warning);">⏳ Pending Questions ({{ pending_questions|length }})</h3>
+        {% if not pending_questions %}
+            <div class="alert alert-info">No pending questions at the moment.</div>
+        {% endif %}
+        
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            {% for q in pending_questions %}
+            <div class="card" id="q-card-{{ q.id }}" style="border-left: 5px solid var(--warning);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div>
+                        <span style="font-weight: bold; font-size: 1.1em;">👤 {{ q.patient_name }}</span>
+                        <span style="color: var(--secondary); font-size: 0.9em;"> ({{ q.age }}y, {{ q.gender }})</span>
+                    </div>
+                    <small style="color: var(--secondary);">{{ q.created_at }}</small>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 15px; border-radius: var(--radius-md); margin-bottom: 15px;">
+                    <strong>Q:</strong> {{ q.question }}
+                    {% if q.symptoms %}
+                    <br><small style="color: var(--secondary);">Symptoms: {{ q.symptoms }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <textarea id="answer-{{ q.id }}" class="form-control" placeholder="Type your clinical response here..." style="height: 80px;"></textarea>
+                </div>
+                <div class="grid-2" style="gap: 10px;">
+                    <input type="text" id="rx-{{ q.id }}" class="form-control" placeholder="Prescription (Optional)">
+                    <input type="text" id="labs-{{ q.id }}" class="form-control" placeholder="Lab Tests (Optional)">
+                </div>
+                <button onclick="submitAnswer({{ q.id }})" class="btn btn-primary btn-block" style="margin-top: 15px;">
+                    ✅ Submit Response
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div>
+         <h3 style="color: var(--success);">✅ Recently Answered</h3>
+         {% for h in history %}
+         <div class="card" style="padding: 20px; margin-bottom: 15px; opacity: 0.8;">
+             <div style="display: flex; justify-content: space-between;">
+                 <strong>To: {{ h.patient_name }}</strong>
+                 <small>{{ h.updated_at }}</small>
+             </div>
+             <p style="margin: 5px 0; font-style: italic;">"{{ h.question|truncate(50) }}"</p>
+             <div style="background: #f0fdf4; padding: 10px; border-radius: var(--radius-md); color: #166534; font-size: 0.9em;">
+                 <strong>A:</strong> {{ h.doctor_response|truncate(80) }}
+             </div>
+         </div>
+         {% endfor %}
+    </div>
+</div>
+
+<script>
+function submitAnswer(qId) {
+    const answer = document.getElementById(`answer-${qId}`).value;
+    if (!answer.trim()) { alert("Response cannot be empty."); return; }
+    
+    const btn = document.querySelector(`#q-card-${qId} button`);
+    btn.innerText = "Submitting..."; btn.disabled = true;
+
+    fetch('/doctor/answer-question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            question_id: qId,
+            answer: answer,
+            prescription: document.getElementById(`rx-${qId}`).value,
+            lab_tests: document.getElementById(`labs-${qId}`).value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            document.getElementById(`q-card-${qId}`).remove();
+            // Optional: Reload to update history area
+             window.location.reload(); 
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Login - MediCare{% endblock %}
+{% block content %}
+<div class="glass-card" style="text-align: center; margin-top: 80px;">
+    <div style="font-size: 4em; margin-bottom: 20px;">🔐</div>
+    <h2 class="text-gradient" style="margin-bottom: 30px; font-size: 2em;">Welcome Back</h2>
+    
+    <form method="POST">
+        <div style="text-align: left;">
+            <label style="font-weight: bold; display: block; margin-bottom: 8px;">Username</label>
+            <input type="text" name="username" class="form-control" placeholder="Enter your username" required>
+        </div>
+        <div style="text-align: left; margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 8px;">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-primary">👉 Secure Login</button>
+    </form>
+
+    <div style="margin-top: 30px; padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; text-align: left; font-size: 0.9em;">
+        <strong>🧪 Demo Accounts:</strong><br>
+        👨‍⚕️ Doctor: <code>demo_doctor</code> / <code>demo123</code><br>
+        👤 Patient: <code>demo_patient</code> / <code>demo123</code>
+    </div>
+</div>
+{% endblock %}

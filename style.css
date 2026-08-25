@@ -1,0 +1,329 @@
+/* =========================================
+   1. GLOBAL VARIABLES & RESET
+   ========================================= */
+:root {
+    --primary: #2563eb;       /* Royal Blue */
+    --primary-dark: #1e40af;  /* Dark Blue */
+    --accent: #3b82f6;        /* Sky Blue */
+    --secondary: #64748b;     /* Slate Grey */
+    --bg-body: #f8fafc;       /* Light Grey Background */
+    --glass-white: rgba(255, 255, 255, 0.95);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+    --radius-card: 16px;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+    background-size: 20px 20px;
+    margin: 0;
+    color: #1e293b;
+    line-height: 1.6;
+}
+
+/* =========================================
+   2. NAVBAR STYLING
+   ========================================= */
+.navbar {
+    background: var(--glass-white);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.nav-brand {
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--secondary);
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+/* =========================================
+   3. HERO SECTION STYLING
+   ========================================= */
+.hero-card {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: var(--radius-card);
+    padding: 40px;
+    margin: 30px auto;
+    max-width: 1200px;
+    box-shadow: var(--shadow-lg);
+    color: white;
+}
+
+.hero-avatar-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.3);
+    object-fit: cover;
+}
+
+.hero-avatar-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: white;
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid rgba(255,255,255,0.3);
+}
+
+/* =========================================
+   4. AI SECTION STYLING
+   ========================================= */
+.ai-agent-section {
+    max-width: 1200px;
+    margin: 0 auto 40px auto;
+}
+
+.ai-agent-card {
+    background: #eff6ff; /* Very light blue */
+    border: 2px solid #bfdbfe;
+    border-radius: var(--radius-card);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-ai-primary {
+    background: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.btn-ai-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-ai-secondary {
+    background: white;
+    color: var(--primary);
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    border: 1px solid var(--primary);
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.btn-ai-secondary:hover {
+    background: #f0f9ff;
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   5. DASHBOARD GRID & CARDS
+   ========================================= */
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.feature-card {
+    background: var(--glass-white);
+    padding: 25px;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
+}
+
+.feature-card h3 {
+    margin: 10px 0 5px 0;
+    color: #1e293b;
+    font-size: 1.2rem;
+}
+
+.feature-card p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.icon-container {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+/* Specific Card Styles */
+.emergency-card {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+.emergency-card:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 50px;
+    font-weight: bold;
+}
+
+/* =========================================
+   6. UTILITIES (Forms, Buttons, Text)
+   ========================================= */
+.glass-container {
+    background: var(--glass-white);
+    padding: 40px;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid #e2e8f0;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}

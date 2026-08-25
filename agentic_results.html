@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}AI Health Results{% endblock %}
+{% block content %}
+<div class="glass-container" style="max-width: 800px; margin: auto; text-align: center;">
+    <h2 class="text-gradient" style="margin-bottom: 10px;">🧠 Agentic Health Analysis</h2>
+    <p style="color: #64748b; margin-bottom: 40px;">Deep analysis of your biometrics, environment, and lifestyle.</p>
+
+    <div style="position: relative; width: 220px; height: 220px; margin: 0 auto 40px; border-radius: 50%; background: conic-gradient(#4f46e5 {{ score }}%, #e0e7ff 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);">
+        <div style="width: 180px; height: 180px; background: white; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 5px 15px rgba(0,0,0,0.05);">
+            <span style="font-size: 4em; font-weight: 800; color: #4f46e5; line-height: 1;">{{ score }}</span>
+            <span style="color: #64748b; font-weight: 600;">Health Score</span>
+        </div>
+    </div>
+
+    <div style="text-align: left; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">📊 AI Generated Insights</h3>
+        
+        <div style="display: grid; gap: 15px;">
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; border-left: 4px solid #0ea5e9;">
+                <strong>⚖️ Weight Analysis:</strong> <span style="color: #0369a1;">{{ bmi }}</span>
+            </div>
+
+            {% for insight in insights %}
+            <div style="background: #fff1f2; padding: 15px; border-radius: 10px; border-left: 4px solid #ef4444; color: #991b1b;">
+                <strong>⚠️ Alert:</strong> {{ insight }}
+            </div>
+            {% else %}
+            <div style="background: #f0fdf4; padding: 15px; border-radius: 10px; border-left: 4px solid #10b981; color: #166534;">
+                <strong>✅ Excellent:</strong> No major risk factors detected in current data.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+        <a href="/dashboard" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+        <a href="/chat_agent" class="btn btn-primary">💬 Discuss with AI Agent</a>
+    </div>
+</div>
+{% endblock %}

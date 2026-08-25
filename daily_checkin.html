@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Daily Check-in - MediCare{% endblock %}
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+    <h2 style="color: #2563eb; text-align: center;">📝 Daily Health Log</h2>
+    <p style="text-align: center; color: #666;">Help your doctor understand your health better.</p>
+    
+    <form method="POST">
+        <label style="display:block; margin: 15px 0 5px; font-weight:bold;">🥗 What did you eat today?</label>
+        <textarea name="food" class="form-control" rows="2" placeholder="Breakfast, Lunch, Dinner..." required></textarea>
+
+        <label style="display:block; margin: 15px 0 5px; font-weight:bold;">💊 Medicines Taken</label>
+        <input type="text" name="meds" class="form-control" placeholder="Name of tablets..." required>
+
+        <label style="display:block; margin: 15px 0 5px; font-weight:bold;">🏃 Physical Activity</label>
+        <input type="text" name="activity" class="form-control" placeholder="Walking, Gym, Rest..." required>
+
+        <label style="display:block; margin: 15px 0 5px; font-weight:bold;">🤒 Symptoms / Feeling</label>
+        <textarea name="symptoms" class="form-control" rows="2" placeholder="Headache, Tired, Energetic..." required></textarea>
+
+        <label style="display:block; margin: 15px 0 5px; font-weight:bold;">😊 Mood</label>
+        <select name="mood" class="form-control">
+            <option value="Happy">Happy / Energetic</option>
+            <option value="Neutral">Neutral / Okay</option>
+            <option value="Sad">Sad / Tired</option>
+            <option value="Anxious">Anxious / Stressed</option>
+        </select>
+
+        <button type="submit" class="btn" style="width: 100%; background: #2563eb; color: white; padding: 12px; margin-top: 20px; border-radius: 5px;">Submit Log</button>
+    </form>
+</div>
+<style> .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; } </style>
+{% endblock %}

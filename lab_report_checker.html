@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}AI Report Analyzer{% endblock %}
+{% block content %}
+<div class="glass-container" style="max-width: 800px; margin: auto;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 class="text-gradient" style="font-size: 2.5em;">🔬 AI Pathological Scanner</h2>
+        <p>Upload a photo or paste text from your lab report.</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="scanForm">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="file-upload-wrapper" onclick="document.getElementById('file-input').click()" style="border: 2px dashed #4f46e5; padding: 40px; text-align: center; border-radius: 15px; cursor: pointer; background: #f5f3ff;">
+                <div style="font-size: 3em;">📄</div>
+                <p>Click to Upload Image</p>
+                <input type="file" name="report_image" id="file-input" style="display: none;">
+            </div>
+            <textarea name="report_text" class="form-control" placeholder="Or paste text here... e.g. Hemoglobin 10.5, Cholesterol 260" style="height: 100%; border: 2px solid #e0e7ff;"></textarea>
+        </div>
+        <button type="button" onclick="runAnalysis()" class="btn btn-primary btn-block" style="font-size: 1.2em;">🚀 Analyze Report</button>
+    </form>
+
+    <div id="loading" style="display: none; text-align: center; margin-top: 30px;">
+        <div style="font-size: 3em; animation: spin 1s infinite linear;">⚙️</div>
+        <p>AI is analyzing biomarkers...</p>
+    </div>
+
+    {% if analysis %}
+    <div id="results" style="margin-top: 40px; animation: fadeIn 0.5s;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3>📋 Analysis Results</h3>
+            <span style="background: {{ 'red' if analysis.score < 80 else 'green' }}; color: white; padding: 5px 15px; border-radius: 20px;">Health Score: {{ analysis.score }}/100</span>
+        </div>
+        
+        <div class="card" style="border-left: 5px solid #ef4444; margin-bottom: 20px;">
+            <h4 style="color: #991b1b;">⚠️ Findings</h4>
+            <ul>
+                {% for item in analysis.findings %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+        </div>
+        
+        <div class="card" style="border-left: 5px solid #10b981;">
+            <h4 style="color: #065f46;">💡 AI Suggestions</h4>
+            <ul>
+                {% for item in analysis.suggestions %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function runAnalysis() {
+    document.getElementById('loading').style.display = 'block';
+    setTimeout(() => { document.getElementById('scanForm').submit(); }, 1500); // Fake delay for effect
+}
+</script>
+<style>@keyframes spin { 100% { transform: rotate(360deg); } } @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }</style>
+{% endblock %}

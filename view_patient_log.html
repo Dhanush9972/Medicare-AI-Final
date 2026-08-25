@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Patient Logs{% endblock %}
+{% block content %}
+
+<div class="glass-container">
+    <h2 class="text-gradient">👤 {{ patient.full_name }} - Health Logs</h2>
+    <a href="{{ url_for('patient_logs_list') }}" class="btn btn-secondary">⬅ Back to List</a>
+
+    <div style="margin-top: 30px;">
+        {% for log in logs %}
+        <div class="card" style="margin-bottom: 20px;">
+            <h4 style="margin: 0; color: #1e40af;">📅 {{ log.date }}</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
+                <div><strong>🍎 Food:</strong> {{ log.food_intake }}</div>
+                <div><strong>💊 Meds:</strong> {{ log.medicines_taken }}</div>
+                <div><strong>🏃 Activity:</strong> {{ log.physical_activity }}</div>
+                <div><strong>😊 Mood:</strong> {{ log.mood }}</div>
+            </div>
+
+            <form action="{{ url_for('suggest_on_log', patient_id=patient.id, log_date=log.date) }}" method="POST" style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+                <label>Add Clinical Suggestion:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" name="suggestion" class="form-control" placeholder="e.g., Drink more water..." style="margin: 0;">
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No logs available for this patient.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

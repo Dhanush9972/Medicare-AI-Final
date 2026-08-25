@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics & Reports - MediCare{% endblock %}
+
+{% block extra_css %}
+<style>
+    .doctor-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .stats-patients .stats-number { color: #3b82f6; }
+    .stats-questions .stats-number { color: #10b981; }
+    .stats-prescriptions .stats-number { color: #f59e0b; }
+    .stats-drugs .stats-number { color: #ef4444; }
+    
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .chart-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1rem;
+    }
+    
+    .condition-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .condition-item:last-child {
+        border-bottom: none;
+    }
+    
+    .condition-name {
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .condition-count {
+        background: #667eea;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+    
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.1rem;
+    }
+    
+    .activity-question {
+        background: #e0f2fe;
+        color: #0277bd;
+    }
+    
+    .activity-prescription {
+        background: #fff3e0;
+        color: #ef6c00;
+    }
+    
+    .activity-content {
+        flex: 1;
+    }
+    
+    .activity-description {
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+    
+    .activity-date {
+        color: #6b7280;
+        font-size: 0.8rem;
+    }
+    
+    .chart-placeholder {
+        height: 300px;
+        background: #f9fafb;
+        border: 2px dashed #d1d5db;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        font-size: 1.1rem;
+    }
+    
+    .export-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .export-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="doctor-header text-center">
+    <div class="container">
+        <h1>📊 Analytics & Reports</h1>
+        <p>View your medical practice statistics and patient analytics</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Key Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card stats-patients">
+                <div class="stats-number">{{ total_patients }}</div>
+                <div class="stats-label">Total Patients</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card stats-questions">
+                <div class="stats-number">{{ questions_answered }}</div>
+                <div class="stats-label">Questions Answered</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card stats-prescriptions">
+                <div class="stats-number">{{ prescriptions_issued }}</div>
+                <div class="stats-label">Prescriptions Issued</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card stats-drugs">
+                <div class="stats-number">{{ drugs_added }}</div>
+                <div class="stats-label">Drugs Added</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+        <!-- Monthly Activity Chart -->
+        <div class="col-md-8">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="chart-title">📈 Monthly Activity</h3>
+                    <button class="export-btn" onclick="exportChart()">📥 Export Data</button>
+                </div>
+                <div class="chart-placeholder">
+                    <div class="text-center">
+                        <i class="fas fa-chart-line" style="font-size: 3rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+                        <br>
+                        Monthly activity chart will be displayed here
+                        <br>
+                        <small>Questions: {{ monthly_stats|length }} months of data</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Conditions -->
+        <div class="col-md-4">
+            <div class="chart-container">
+                <h3 class="chart-title">🏥 Top Conditions Treated</h3>
+                {% if top_conditions %}
+                    {% for condition in top_conditions %}
+                    <div class="condition-item">
+                        <div class="condition-name">{{ condition.symptoms|title }}</div>
+                        <div class="condition-count">{{ condition.count }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                        <p>No conditions treated yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h3 class="chart-title">⏱️ Response Time Analysis</h3>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="stats-number" style="font-size: 1.8rem; color: #10b981;">24h</div>
+                        <div class="stats-label">Avg Response Time</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stats-number" style="font-size: 1.8rem; color: #f59e0b;">85%</div>
+                        <div class="stats-label">Response Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h3 class="chart-title">👥 Patient Satisfaction</h3>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="stats-number" style="font-size: 1.8rem; color: #3b82f6;">4.8</div>
+                        <div class="stats-label">Average Rating</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stats-number" style="font-size: 1.8rem; color: #ef4444;">92%</div>
+                        <div class="stats-label">Satisfaction Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-container">
+                <h3 class="chart-title">🕒 Recent Activity</h3>
+                {% if recent_activity %}
+                    {% for activity in recent_activity %}
+                    <div class="activity-item">
+                        <div class="activity-icon activity-{{ activity.type }}">
+                            {% if activity.type == 'question' %}
+                                <i class="fas fa-question-circle"></i>
+                            {% else %}
+                                <i class="fas fa-prescription-bottle-alt"></i>
+                            {% endif %}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-description">
+                                {% if activity.type == 'question' %}
+                                    Answered: {{ activity.description[:50] }}{% if activity.description|length > 50 %}...{% endif %}
+                                {% else %}
+                                    Prescribed: {{ activity.description }}
+                                {% endif %}
+                            </div>
+                            <div class="activity-date">
+                                {{ activity.date[:19].replace('T', ' ') if activity.date else 'Unknown date' }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-history fa-2x mb-2"></i>
+                        <p>No recent activity</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a href="/doctor/manage-questions" class="export-btn mr-3">
+                📋 Manage Questions
+            </a>
+            <a href="/doctor/prescriptions" class="export-btn mr-3">
+                💊 View Prescriptions
+            </a>
+            <a href="/doctor/add-drug" class="export-btn">
+                ➕ Add New Drug
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportChart() {
+    // Simple CSV export
+    const data = [
+        ['Month', 'Questions', 'Prescriptions'],
+        {% for month in monthly_stats %}
+        ['{{ month.month }}/{{ month.year }}', {{ month.questions }}, {{ month.prescriptions }}],
+        {% endfor %}
+    ];
+    
+    let csvContent = "data:text/csv;charset=utf-8,";
+    data.forEach(function(rowArray) {
+        let row = rowArray.join(",");
+        csvContent += row + "\r\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "doctor_analytics.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// You can add chart libraries like Chart.js here for more advanced visualizations
+console.log('Analytics page loaded');
+</script>
+{% endblock %}

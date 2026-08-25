@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medicine Price Estimator</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding-top: 50px; }
+        .card { background: white; width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; }
+        textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin: 10px 0; }
+        button { background: #27ae60; color: white; width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        button:hover { background: #219150; }
+        .result-box { margin-top: 20px; background: #e8f5e9; padding: 15px; border-radius: 5px; }
+        .item { display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 5px 0; }
+        .total { font-size: 1.2em; font-weight: bold; margin-top: 10px; text-align: right; color: #27ae60; }
+        .btn-home { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>💊 Medicine Price Estimator</h2>
+        <p>Enter prescribed medicines (separated by commas) to get an estimated cost.</p>
+        
+        <form method="POST">
+            <textarea name="medicines" rows="3" placeholder="Ex: Paracetamol, Azithromycin, Cough Syrup..."></textarea>
+            <button type="submit">Calculate Bill</button>
+        </form>
+
+        {% if cost %}
+        <div class="result-box">
+            <h3>Estimated Quotation</h3>
+            {% for item in breakdown %}
+            <div class="item">
+                <span>{{ item.name }}</span>
+                <span>₹{{ item.price }}</span>
+            </div>
+            {% endfor %}
+            <div class="total">Total Estimate: ₹{{ cost }}</div>
+            <p style="font-size: 0.8em; color: #888;">*Prices are indicative based on generic market rates.</p>
+        </div>
+        {% endif %}
+        
+        <a href="{{ url_for('dashboard') }}" class="btn-home">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

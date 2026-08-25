@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="glass-container" style="max-width: 900px; margin: auto;">
+    <h2 class="text-gradient">🧠 Super Agentic Health Assessment</h2>
+    <p style="color: #64748b; margin-bottom: 30px;">
+        AI-driven analysis. Please answer truthfully for an accurate score.
+    </p>
+
+    <form method="POST">
+        <h4 style="color: #2563eb; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">1. Biometrics</h4>
+        <div class="grid-2">
+            <div><label class="form-label">Height (cm)</label><input type="number" name="height" class="form-control" value="{{ user.height_cm }}" required></div>
+            <div><label class="form-label">Weight (kg)</label><input type="number" name="weight" class="form-control" value="{{ user.weight_kg }}" required></div>
+            <div><label class="form-label">Age</label><input type="number" name="age" class="form-control" value="{{ user.age }}" readonly></div>
+        </div>
+
+        <h4 style="color: #2563eb; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-top: 30px;">2. Lifestyle & Habits</h4>
+        <div class="grid-2">
+            <div>
+                <label class="form-label">Diet Quality</label>
+                <select name="food_habits" class="form-control">
+                    <option value="Balanced">Balanced & Healthy</option>
+                    <option value="Junk">High Processed/Junk Food</option>
+                    <option value="Sugar">High Sugar Intake</option>
+                    <option value="Unbalanced">Irregular/Unbalanced</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Smoking / Alcohol</label>
+                <select name="habits" class="form-control">
+                    <option value="None">None / Clean</option>
+                    <option value="Smoking">Smoking (Regular)</option>
+                    <option value="Alcohol">Alcohol (Regular)</option>
+                    <option value="Both">Both</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">City (Pollution Check)</label>
+                <input type="text" name="location" class="form-control" value="{{ user.location_city }}" placeholder="e.g. Mumbai">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 30px; font-size: 1.2em;">🚀 Analyze Health Score</button>
+    </form>
+</div>
+{% endblock %}

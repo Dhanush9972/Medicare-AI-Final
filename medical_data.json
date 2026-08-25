@@ -1,0 +1,131 @@
+[
+  {
+    "symptoms": [
+      "fever",
+      "headache",
+      "fatigue"
+    ],
+    "condition": "flu",
+    "recommended_drugs": [
+      "Paracetamol",
+      "Ibuprofen"
+    ],
+    "severity": "mild"
+  },
+  {
+    "symptoms": [
+      "chest_pain",
+      "shortness_of_breath"
+    ],
+    "condition": "cardiac",
+    "recommended_drugs": [
+      "Aspirin",
+      "Nitroglycerin"
+    ],
+    "severity": "severe"
+  },
+  {
+    "symptoms": [
+      "stomach_pain",
+      "nausea",
+      "vomiting"
+    ],
+    "condition": "gastric",
+    "recommended_drugs": [
+      "Omeprazole",
+      "Metoclopramide"
+    ],
+    "severity": "moderate"
+  },
+  {
+    "symptoms": [
+      "cough",
+      "fever",
+      "fatigue"
+    ],
+    "condition": "respiratory",
+    "recommended_drugs": [
+      "Azithromycin",
+      "Dexamethasone"
+    ],
+    "severity": "moderate"
+  },
+  {
+    "symptoms": [
+      "joint_pain",
+      "swelling",
+      "stiffness"
+    ],
+    "condition": "arthritis",
+    "recommended_drugs": [
+      "Meloxicam",
+      "Prednisone"
+    ],
+    "severity": "moderate"
+  },
+  {
+    "symptoms": [
+      "high_bp",
+      "dizziness",
+      "headache"
+    ],
+    "condition": "hypertension",
+    "recommended_drugs": [
+      "Lisinopril",
+      "Metoprolol"
+    ],
+    "severity": "moderate"
+  },
+  {
+    "symptoms": [
+      "frequent_urination",
+      "thirst",
+      "fatigue"
+    ],
+    "condition": "diabetes",
+    "recommended_drugs": [
+      "Metformin",
+      "Insulin glargine"
+    ],
+    "severity": "moderate"
+  },
+  {
+    "symptoms": [
+      "rash",
+      "itching",
+      "swelling"
+    ],
+    "condition": "allergy",
+    "recommended_drugs": [
+      "Cetirizine",
+      "Prednisolone"
+    ],
+    "severity": "mild"
+  },
+  {
+    "symptoms": [
+      "depression",
+      "anxiety",
+      "insomnia"
+    ],
+    "condition": "mental_health",
+    "recommended_drugs": [
+      "Sertraline",
+      "Alprazolam"
+    ],
+    "severity": "moderate"
+  },
+  {
+    "symptoms": [
+      "migraine",
+      "sensitivity_to_light",
+      "nausea"
+    ],
+    "condition": "migraine",
+    "recommended_drugs": [
+      "Sumatriptan",
+      "Tramadol"
+    ],
+    "severity": "moderate"
+  }
+]

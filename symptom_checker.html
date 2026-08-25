@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Advanced Symptom Checker{% endblock %}
+{% block content %}
+<div class="glass-container" style="max-width: 900px; margin: auto;">
+    <h2 class="text-gradient">🌡️ Advanced AI Symptom Analysis</h2>
+    <p style="color: #64748b;">Enter your details for a precise AI-driven drug recommendation.</p>
+
+    <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 20px;">
+        
+        <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <label class="form-label">Patient Age</label>
+                <input type="number" id="age" class="form-control" value="25">
+            </div>
+            <div>
+                <label class="form-label">Symptom Severity</label>
+                <select id="severity" class="form-control">
+                    <option value="Mild">Mild - Discomfort but bearable</option>
+                    <option value="Moderate">Moderate - Affects daily routine</option>
+                    <option value="Severe">Severe - Need urgent attention</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Blood Pressure Status</label>
+                <select id="bp" class="form-control">
+                    <option value="Normal">Normal</option>
+                    <option value="High">High (Hypertension)</option>
+                    <option value="Low">Low (Hypotension)</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Diabetes History</label>
+                <select id="diabetes" class="form-control">
+                    <option value="None">No History</option>
+                    <option value="Type1">Type 1</option>
+                    <option value="Type2">Type 2</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Select Symptoms (Hold Ctrl to select multiple)</label>
+            <select id="symptomInput" multiple style="width: 100%; height: 180px; padding: 10px; border: 2px solid #e0e7ff; border-radius: 10px;">
+                {% for s in symptoms %}
+                <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button onclick="analyze()" class="btn btn-primary btn-block" style="font-size: 1.2em;">
+            🔍 Analyze & Get Recommendations
+        </button>
+    </div>
+
+    <div id="loading" style="display:none; text-align:center; margin-top:30px;">
+        <div style="font-size:3em; animation:spin 1s infinite linear;">⚙️</div>
+        <p>AI is cross-referencing database...</p>
+    </div>
+
+    <div id="results" style="margin-top: 30px;"></div>
+</div>
+
+<script>
+function analyze() {
+    const selected = Array.from(document.getElementById('symptomInput').selectedOptions).map(o => o.value);
+    const age = document.getElementById('age').value;
+    const severity = document.getElementById('severity').value;
+    
+    if(selected.length === 0) return alert("Please select at least one symptom.");
+
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('results').innerHTML = '';
+
+    fetch('/recommend-drugs', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            symptoms: selected,
+            age: age,
+            severity: severity
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        document.getElementById('loading').style.display = 'none';
+        let html = '';
+        if(data.recommendations.length > 0) {
+            data.recommendations.forEach(r => {
+                html += `<div class="card" style="margin-bottom:15px; border-left: 5px solid #2563eb; background:white;">
+                    <h3 style="color:#1e3a8a;">${r.condition} <span style="font-size:0.8em; color:#64748b;">(${r.confidence}% Match)</span></h3>
+                    <p><strong>💊 Recommended Drugs:</strong> ${r.drugs.map(d=>d.name).join(', ')}</p>
+                    <div style="margin-top:10px; font-size:0.9em; color:#64748b;">
+                        <em>Based on your age (${age}) and ${severity} severity level.</em>
+                    </div>
+                </div>`;
+            });
+        } else {
+            html = '<div class="alert alert-info">No specific matches found. Please consult a doctor.</div>';
+        }
+        document.getElementById('results').innerHTML = html;
+    });
+}
+</script>
+<style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+{% endblock %}

@@ -1,0 +1,547 @@
+{% extends "base.html" %}
+
+{% block title %}Emergency Support - MediCare{% endblock %}
+
+{% block extra_css %}
+<style>
+    .emergency-header {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        border: 2px solid #fca5a5;
+    }
+
+    .emergency-warning {
+        background: #fef2f2;
+        border: 2px solid #ef4444;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .emergency-contacts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .contact-card {
+        background: white;
+        border: 2px solid #ef4444;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .contact-card:hover {
+        transform: scale(1.02);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .contact-icon {
+        width: 60px;
+        height: 60px;
+        background: #ef4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .emergency-types {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .emergency-type {
+        background: white;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .emergency-type:hover {
+        border-color: #ef4444;
+        box-shadow: var(--shadow-md);
+    }
+
+    .emergency-type.selected {
+        border-color: #ef4444;
+        background: #fef2f2;
+    }
+
+    .type-icon {
+        width: 50px;
+        height: 50px;
+        background: #fca5a5;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+        color: #991b1b;
+    }
+
+    .emergency-results {
+        background: white;
+        border: 2px solid #ef4444;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        display: none;
+    }
+
+    .results-header {
+        background: #ef4444;
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .drug-recommendation {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #fca5a5;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .drug-recommendation:last-child {
+        border-bottom: none;
+    }
+
+    .drug-icon {
+        width: 40px;
+        height: 40px;
+        background: #dcfce7;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #166534;
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .emergency-disclaimer {
+        background: #fbbf24;
+        color: #92400e;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+        border: 2px solid #f59e0b;
+    }
+
+    @media (max-width: 768px) {
+        .emergency-contacts {
+            grid-template-columns: 1fr;
+        }
+        
+        .emergency-types {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="emergency-header pulse">
+    <h1><i class="fas fa-ambulance"></i> Emergency Medical Support</h1>
+    <p>Immediate access to critical drug recommendations and emergency contacts</p>
+</div>
+
+<div class="emergency-warning">
+    <h2 style="color: #991b1b; margin-bottom: 1rem;">
+        <i class="fas fa-exclamation-triangle"></i> MEDICAL EMERGENCY
+    </h2>
+    <p style="color: #991b1b; font-size: 1.125rem; margin: 0;">
+        If you are experiencing a life-threatening emergency, call emergency services immediately. 
+        This system provides informational support only and is NOT a substitute for emergency medical care.
+    </p>
+</div>
+
+<!-- Emergency Contacts -->
+<div class="emergency-contacts">
+    <div class="contact-card">
+        <div class="contact-icon">
+            <i class="fas fa-phone"></i>
+        </div>
+        <h3 style="color: #991b1b; margin-bottom: 0.5rem;">Emergency Services</h3>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">108 / 112</div>
+        <p style="color: #7f1d1d; font-size: 0.875rem; margin: 0;">National Emergency Response System</p>
+    </div>
+    
+    <div class="contact-card">
+        <div class="contact-icon">
+            <i class="fas fa-ambulance"></i>
+        </div>
+        <h3 style="color: #991b1b; margin-bottom: 0.5rem;">Ambulance Service</h3>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">102</div>
+        <p style="color: #7f1d1d; font-size: 0.875rem; margin: 0;">Free ambulance service across India</p>
+    </div>
+    
+    <div class="contact-card">
+        <div class="contact-icon">
+            <i class="fas fa-fire"></i>
+        </div>
+        <h3 style="color: #991b1b; margin-bottom: 0.5rem;">Fire & Rescue</h3>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">101</div>
+        <p style="color: #7f1d1d; font-size: 0.875rem; margin: 0;">Fire emergency and rescue services</p>
+    </div>
+    
+    <div class="contact-card">
+        <div class="contact-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 style="color: #991b1b; margin-bottom: 0.5rem;">Police Emergency</h3>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">100</div>
+        <p style="color: #7f1d1d; font-size: 0.875rem; margin: 0;">Police emergency and crime reporting</p>
+    </div>
+
+    <div class="contact-card">
+        <div class="contact-icon">
+            <i class="fas fa-skull-crossbones"></i>
+        </div>
+        <h3 style="color: #991b1b; margin-bottom: 0.5rem;">Poison Control</h3>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">+91-11-26589391</div>
+        <p style="color: #7f1d1d; font-size: 0.875rem; margin: 0;">All India Institute of Medical Sciences</p>
+    </div>
+    
+    <div class="contact-card">
+        <div class="contact-icon">
+            <i class="fas fa-heart"></i>
+        </div>
+        <h3 style="color: #991b1b; margin-bottom: 0.5rem;">Mental Health</h3>
+        <div style="font-size: 1.5rem; font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">+91-22-25521111</div>
+        <p style="color: #7f1d1d; font-size: 0.875rem; margin: 0;">Vandrevala Foundation Helpline</p>
+    </div>
+</div>
+
+<!-- Bangalore Local Emergency Contacts -->
+<div class="card" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; margin-bottom: 2rem;">
+    <div style="padding: 2rem;">
+        <h2 style="color: white; margin-bottom: 1.5rem; text-align: center;">
+            <i class="fas fa-map-marker-alt"></i> Bangalore Emergency Services
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem;">
+                <h4 style="color: white; margin-bottom: 1rem;">
+                    <i class="fas fa-hospital"></i> Major Hospitals
+                </h4>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Manipal Hospital</strong><br>
+                    <span style="opacity: 0.9;">+91-80-25023456</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">HAL Airport Road, Bangalore</span>
+                </div>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Apollo Hospital</strong><br>
+                    <span style="opacity: 0.9;">+91-80-26304050</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">Bannerghatta Road, Bangalore</span>
+                </div>
+                <div>
+                    <strong>Fortis Hospital</strong><br>
+                    <span style="opacity: 0.9;">+91-80-66214444</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">Bannerghatta Road, Bangalore</span>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem;">
+                <h4 style="color: white; margin-bottom: 1rem;">
+                    <i class="fas fa-phone-alt"></i> Local Emergency Services
+                </h4>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>BBMP Emergency</strong><br>
+                    <span style="opacity: 0.9;">+91-80-22221188</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">Bangalore City Corporation</span>
+                </div>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Traffic Police</strong><br>
+                    <span style="opacity: 0.9;">+91-80-22943520</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">Bangalore Traffic Police Control</span>
+                </div>
+                <div>
+                    <strong>Karnataka State Helpline</strong><br>
+                    <span style="opacity: 0.9;">+91-80-22690000</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">State Emergency Response</span>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem;">
+                <h4 style="color: white; margin-bottom: 1rem;">
+                    <i class="fas fa-pills"></i> 24/7 Pharmacies
+                </h4>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Apollo Pharmacy</strong><br>
+                    <span style="opacity: 0.9;">+91-80-30300707</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">Multiple locations, 24/7</span>
+                </div>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>MedPlus Pharmacy</strong><br>
+                    <span style="opacity: 0.9;">+91-80-40404040</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">Emergency medicine delivery</span>
+                </div>
+                <div>
+                    <strong>Netmeds</strong><br>
+                    <span style="opacity: 0.9;">+91-80-68102400</span><br>
+                    <span style="font-size: 0.875rem; opacity: 0.8;">Online pharmacy, fast delivery</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Emergency Drug Recommendations -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title" style="color: #991b1b;">
+            <i class="fas fa-first-aid"></i> Emergency Drug Recommendations
+        </h2>
+        <p style="color: #7f1d1d; margin: 0;">Select your emergency type for immediate medication guidance</p>
+    </div>
+    
+    <div class="emergency-types">
+        <div class="emergency-type" onclick="selectEmergency('cardiac')">
+            <div class="type-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Cardiac Emergency</h3>
+            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                Chest pain, heart attack symptoms, irregular heartbeat
+            </p>
+        </div>
+        
+        <div class="emergency-type" onclick="selectEmergency('respiratory')">
+            <div class="type-icon">
+                <i class="fas fa-lungs"></i>
+            </div>
+            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Respiratory Emergency</h3>
+            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                Difficulty breathing, asthma attack, respiratory distress
+            </p>
+        </div>
+        
+        <div class="emergency-type" onclick="selectEmergency('allergic')">
+            <div class="type-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Allergic Reaction</h3>
+            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                Severe allergic reaction, anaphylaxis, swelling
+            </p>
+        </div>
+        
+        <div class="emergency-type" onclick="selectEmergency('seizure')">
+            <div class="type-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Seizure/Neurological</h3>
+            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                Seizures, convulsions, neurological emergencies
+            </p>
+        </div>
+        
+        <div class="emergency-type" onclick="selectEmergency('diabetic')">
+            <div class="type-icon">
+                <i class="fas fa-tint"></i>
+            </div>
+            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Diabetic Emergency</h3>
+            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                Blood sugar crisis, diabetic coma, insulin shock
+            </p>
+        </div>
+        
+        <div class="emergency-type" onclick="selectEmergency('overdose')">
+            <div class="type-icon">
+                <i class="fas fa-pills"></i>
+            </div>
+            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Drug Overdose</h3>
+            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                Medication overdose, substance poisoning
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Emergency Results -->
+<div class="emergency-results" id="emergency-results">
+    <div class="results-header">
+        <h2><i class="fas fa-prescription-bottle"></i> Emergency Medication Guidance</h2>
+        <p id="emergency-type-display"></p>
+    </div>
+    
+    <div id="emergency-drugs-list">
+        <!-- Results will be populated here -->
+    </div>
+    
+    <div style="background: #fbbf24; color: #92400e; padding: 1.5rem; text-align: center;">
+        <h4 style="margin-bottom: 0.5rem;">
+            <i class="fas fa-exclamation-triangle"></i> CRITICAL WARNING
+        </h4>
+        <p style="margin: 0; font-weight: 500;">
+            This information is for EMERGENCY REFERENCE ONLY. Always call emergency services (911) 
+            for life-threatening situations. Consult healthcare professionals before administering any medication.
+        </p>
+    </div>
+</div>
+
+<!-- Emergency Disclaimer -->
+<div class="emergency-disclaimer">
+    <h3 style="margin-bottom: 1rem;">
+        <i class="fas fa-shield-alt"></i> Emergency System Limitations
+    </h3>
+    <ul style="margin: 0; padding-left: 1.5rem;">
+        <li>This system provides informational guidance only during emergencies</li>
+        <li>Always prioritize calling emergency services (911) for life-threatening situations</li>
+        <li>Do not delay professional medical treatment based on these recommendations</li>
+        <li>Medication administration should only be done by trained medical personnel</li>
+        <li>Individual medical conditions and allergies may contraindicate these medications</li>
+    </ul>
+</div>
+
+<!-- Emergency Preparedness Tips -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-clipboard-list"></i> Emergency Preparedness
+        </h2>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        <div>
+            <h4 style="color: var(--gray-800); margin-bottom: 1rem;">
+                <i class="fas fa-first-aid-kit"></i> Emergency Kit Essentials
+            </h4>
+            <ul style="color: var(--gray-600);">
+                <li>Basic first aid supplies</li>
+                <li>Emergency medications (if prescribed)</li>
+                <li>Emergency contact information</li>
+                <li>Medical history and allergy information</li>
+                <li>Insurance cards and identification</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h4 style="color: var(--gray-800); margin-bottom: 1rem;">
+                <i class="fas fa-phone-alt"></i> Important Information to Have Ready
+            </h4>
+            <ul style="color: var(--gray-600);">
+                <li>Current medications and dosages</li>
+                <li>Known allergies and reactions</li>
+                <li>Medical conditions and history</li>
+                <li>Primary care physician contact</li>
+                <li>Emergency contact numbers</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function selectEmergency(type) {
+    // Remove previous selection
+    document.querySelectorAll('.emergency-type').forEach(el => {
+        el.classList.remove('selected');
+    });
+    
+    // Add selection to clicked type
+    event.target.closest('.emergency-type').classList.add('selected');
+    
+    // Show loading and get recommendations
+    fetch('/api/emergency-recommend', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ emergency_type: type })
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayEmergencyResults(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error getting emergency recommendations. Please call emergency services.');
+    });
+}
+
+function displayEmergencyResults(data) {
+    const typeDisplay = document.getElementById('emergency-type-display');
+    const drugsList = document.getElementById('emergency-drugs-list');
+    const resultsContainer = document.getElementById('emergency-results');
+    
+    typeDisplay.textContent = `Emergency Type: ${data.emergency_type.toUpperCase()}`;
+    
+    drugsList.innerHTML = '';
+    
+    if (data.recommended_drugs && data.recommended_drugs.length > 0) {
+        data.recommended_drugs.forEach(drug => {
+            drugsList.innerHTML += `
+                <div class="drug-recommendation">
+                    <div class="drug-icon">
+                        <i class="fas fa-prescription-bottle"></i>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <h4 style="margin: 0 0 0.25rem; color: var(--gray-800);">${drug}</h4>
+                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">
+                            Commonly used in ${data.emergency_type} emergencies
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="background: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 500;">
+                            EMERGENCY ONLY
+                        </span>
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        drugsList.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: var(--gray-600);">
+                <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <h3>No specific recommendations available</h3>
+                <p>Call emergency services immediately for professional medical assistance.</p>
+            </div>
+        `;
+    }
+    
+    resultsContainer.style.display = 'block';
+    resultsContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Add emergency hotline quick dial functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Flash the emergency warning every 5 seconds
+    setInterval(function() {
+        const warning = document.querySelector('.emergency-header');
+        warning.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            warning.style.transform = 'scale(1)';
+        }, 200);
+    }, 5000);
+});
+</script>
+{% endblock %}

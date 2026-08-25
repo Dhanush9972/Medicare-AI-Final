@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Analytics</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 40px; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 800px; margin: 30px auto; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .number { font-size: 3em; font-weight: bold; color: #007bff; margin: 10px 0; }
+        .label { color: #666; text-transform: uppercase; font-size: 0.9em; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <h2>📊 Practice Analytics</h2>
+    <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+    
+    <div class="grid">
+        <div class="card">
+            <div class="number">{{ stats.total_patients }}</div>
+            <div class="label">Total Patients</div>
+        </div>
+        <div class="card">
+            <div class="number">{{ stats.consultations_this_month }}</div>
+            <div class="label">Consultations (Nov)</div>
+        </div>
+        <div class="card">
+            <div class="number" style="color: #e67e22;">{{ stats.pending_questions }}</div>
+            <div class="label">Pending Inquiries</div>
+        </div>
+        <div class="card">
+            <div class="number" style="color: #27ae60;">{{ stats.rating }} ★</div>
+            <div class="label">Patient Rating</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Healthy Living - MediCare{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 40px auto;">
+    <div style="text-align: center; margin-bottom: 40px;">
+        <h1 style="color: #2c3e50;">🌱 Healthy Living Hub</h1>
+        <p style="color: #666; font-size: 1.1em;">Click on a habit below to learn the science and practice behind it.</p>
+        <a href="{{ url_for('dashboard') }}" style="text-decoration: none; color: #2563eb; font-weight: bold;">← Back to Dashboard</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px;">
+        {% for key, habit in habits.items() %}
+        <a href="{{ url_for('healthy_habit_detail', habit_id=key) }}" style="text-decoration: none; color: inherit;">
+            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); text-align: center; transition: transform 0.3s; height: 100%;">
+                <div style="font-size: 4em; margin-bottom: 15px;">{{ habit.icon }}</div>
+                <h3 style="margin: 10px 0; color: #333;">{{ habit.title }}</h3>
+                <p style="color: #666; font-size: 0.9em;">{{ habit.summary }}</p>
+                <span style="display: inline-block; margin-top: 15px; color: #2563eb; font-weight: bold;">Read Guide →</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+<style>
+    div[style*="transition"]:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important; }
+</style>
+{% endblock %}

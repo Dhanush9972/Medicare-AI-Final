@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Agora Video Consult{% endblock %}
+{% block content %}
+<div class="glass-container" style="max-width: 1200px; margin: auto; text-align: center;">
+    <h2 class="text-gradient">📹 Secure Agora Video Consultation</h2>
+    <p style="color: #64748b; margin-bottom: 20px;">
+        Channel: <strong>{{ channel_name }}</strong>
+    </p>
+
+    <div id="video-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 400px; margin-bottom: 20px;">
+        <div id="local-player" style="background: black; border-radius: 15px; position: relative; overflow: hidden;">
+            <div style="position: absolute; bottom: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5); padding: 5px;">You</div>
+        </div>
+        <div id="remote-player" style="background: #222; border-radius: 15px; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #666;">Waiting for peer...</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <button id="join-btn" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.2em;">📞 Join Call</button>
+        <button id="leave-btn" class="btn btn-secondary" style="padding: 15px 40px; font-size: 1.2em; display: none;">❌ Leave</button>
+    </div>
+</div>
+
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.18.2.js"></script>
+<script>
+    var client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    var localTracks = { videoTrack: null, audioTrack: null };
+    
+    // Config from Flask
+    var options = {
+        appid: "{{ app_id }}",
+        channel: "{{ channel_name }}",
+        uid: null,
+        token: null // Using App ID Only mode
+    };
+
+    document.getElementById("join-btn").onclick = async function () {
+        if (!options.appid) {
+            alert("Error: Agora App ID not found in app.py!");
+            return;
+        }
+
+        try {
+            await client.join(options.appid, options.channel, options.token, options.uid);
+            
+            // Create local tracks
+            [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+            
+            // Play local video
+            localTracks.videoTrack.play("local-player");
+            
+            // Publish tracks
+            await client.publish(Object.values(localTracks));
+            
+            document.getElementById("join-btn").style.display = "none";
+            document.getElementById("leave-btn").style.display = "inline-block";
+            
+        } catch (error) {
+            console.error(error);
+            if(error.code === "CAN_NOT_GET_GATEWAY_SERVER") {
+                alert("AGORA ERROR: Your App ID is in 'Secure Mode'. Please create a new Agora Project in 'Testing Mode' (App ID Only).");
+            } else {
+                alert("Join failed: " + error.message);
+            }
+        }
+    };
+
+    document.getElementById("leave-btn").onclick = async function () {
+        for (trackName in localTracks) {
+            var track = localTracks[trackName];
+            if (track) {
+                track.stop();
+                track.close();
+                localTracks[trackName] = undefined;
+            }
+        }
+        await client.leave();
+        document.getElementById("join-btn").style.display = "inline-block";
+        document.getElementById("leave-btn").style.display = "none";
+        document.getElementById("local-player").innerHTML = '<div style="position: absolute; bottom: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5); padding: 5px;">You</div>';
+    };
+
+    client.on("user-published", async (user, mediaType) => {
+        await client.subscribe(user, mediaType);
+        if (mediaType === "video") {
+            user.videoTrack.play("remote-player");
+        }
+        if (mediaType === "audio") {
+            user.audioTrack.play();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Ask a Doctor{% endblock %}
+{% block content %}
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+             <h2 class="card-title"><span style="font-size: 1.5em;">👨‍⚕️</span> Submit a Medical Query</h2>
+        </div>
+        <p style="color: var(--secondary); margin-bottom: 25px;">
+            Describe your issue in detail. A qualified doctor will review your case and respond to your dashboard.
+        </p>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label class="form-label">Detailed Question / Health Concern *</label>
+                <textarea name="question" class="form-control" required placeholder="e.g., I have been experiencing persistent headaches for 3 days..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Associated Symptoms (Optional)</label>
+                <input type="text" name="symptoms" class="form-control" placeholder="e.g., Nausea, sensitivity to light">
+            </div>
+            <button type="submit" class="btn btn-accent btn-block">
+                📨 Send to Medical Team
+            </button>
+        </form>
+    </div>
+
+    <div>
+        <h3 style="color: var(--primary-dark);">🕑 Your Question History</h3>
+        {% if not my_questions %}
+            <div class="alert alert-info">You haven't submitted any questions yet.</div>
+        {% else %}
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+            {% for q in my_questions %}
+                <div class="card" style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        {% if q.status == 'answered' %}
+                            <span class="badge badge-answered">✅ Answered</span>
+                        {% else %}
+                            <span class="badge badge-pending">⏳ Pending Review</span>
+                        {% endif %}
+                        <small style="color: var(--secondary);">{{ q.created_at }}</small>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Q:</strong> {{ q.question }}
+                    </div>
+
+                    {% if q.status == 'answered' %}
+                    <div style="background: #f0fdf4; border-left: 4px solid var(--success); padding: 15px; border-radius: var(--radius-md);">
+                        <h4 style="margin: 0 0 10px 0; color: var(--success);">👨‍⚕️ Doctor Response:</h4>
+                        {{ q.doctor_response }}
+                        {% if q.prescription %}
+                        <div style="margin-top: 10px; font-size: 0.9em;"><strong>💊 Rx:</strong> {{ q.prescription }}</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

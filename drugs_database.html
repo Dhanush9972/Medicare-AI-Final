@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+
+{% block title %}Drugs Database - MediCare{% endblock %}
+
+{% block extra_css %}
+<style>
+    .drugs-header {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .search-filters {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .drugs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .drug-card {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--gray-200);
+    }
+
+    .drug-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .drug-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .drug-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stars {
+        color: #fbbf24;
+        font-size: 0.875rem;
+    }
+
+    .rating-value {
+        font-weight: 500;
+        color: var(--gray-700);
+    }
+
+    .drug-info {
+        margin-bottom: 1rem;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .info-label {
+        color: var(--gray-600);
+    }
+
+    .info-value {
+        color: var(--gray-800);
+        font-weight: 500;
+    }
+
+    .drug-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .rating-excellent { border-left: 4px solid #10b981; }
+    .rating-good { border-left: 4px solid #3b82f6; }
+    .rating-average { border-left: 4px solid #f59e0b; }
+    .rating-poor { border-left: 4px solid #ef4444; }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .pagination button {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--gray-300);
+        background: white;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .pagination button:hover:not(:disabled) {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .pagination .active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-item {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--shadow-sm);
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 768px) {
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .drugs-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="drugs-header">
+    <h1><i class="fas fa-pills"></i> Comprehensive Drug Database</h1>
+    <p>Explore our extensive collection of medications with detailed information and ratings</p>
+</div>
+
+<!-- Statistics -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-number" id="total-drugs">{{ drugs|length }}</div>
+        <div class="stat-label">Total Medications</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="avg-rating">4.0</div>
+        <div class="stat-label">Average Rating</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="high-rated">{{ drugs|selectattr('rating', '>=', 4.0)|list|length }}</div>
+        <div class="stat-label">High Rated (4.0+)</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="categories">10+</div>
+        <div class="stat-label">Drug Categories</div>
+    </div>
+</div>
+
+<!-- Search and Filters -->
+<div class="search-filters">
+    <div class="filter-grid">
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fas fa-search"></i> Search Medications
+            </label>
+            <input type="text" id="search-input" class="form-input" placeholder="Search by drug name...">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fas fa-star"></i> Minimum Rating
+            </label>
+            <select id="rating-filter" class="form-select">
+                <option value="">All Ratings</option>
+                <option value="4.0">4.0+ Stars</option>
+                <option value="3.5">3.5+ Stars</option>
+                <option value="3.0">3.0+ Stars</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fas fa-sort"></i> Sort By
+            </label>
+            <select id="sort-filter" class="form-select">
+                <option value="name">Name (A-Z)</option>
+                <option value="rating">Rating (High to Low)</option>
+                <option value="rating-low">Rating (Low to High)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">&nbsp;</label>
+            <button type="button" class="btn btn-primary" onclick="applyFilters()" style="width: 100%;">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Drugs Grid -->
+<div class="drugs-grid" id="drugs-grid">
+    {% for drug in drugs %}
+    <div class="drug-card {% if drug.get('rating', 0) >= 4.0 %}rating-excellent{% elif drug.get('rating', 0) >= 3.5 %}rating-good{% elif drug.get('rating', 0) >= 3.0 %}rating-average{% else %}rating-poor{% endif %}" 
+         data-name="{{ drug.name.lower() }}" 
+         data-rating="{{ drug.get('rating', 0) }}"
+         data-id="{{ drug.get('id', loop.index) }}">
+        
+        <div class="drug-name">
+            <i class="fas fa-prescription-bottle"></i>
+            {{ drug.name }}
+            {% if drug.get('is_custom') %}
+            <span style="background: #059669; color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 0.25rem; margin-left: 0.5rem;">
+                <i class="fas fa-user-md"></i> Doctor Added
+            </span>
+            {% endif %}
+        </div>
+        
+        {% if drug.get('is_custom') %}
+        <!-- Custom drug layout -->
+        <div class="drug-category" style="color: #059669; font-weight: 600; text-transform: capitalize; margin: 0.5rem 0;">
+            <i class="fas fa-tag"></i> {{ drug.category }}
+        </div>
+        
+        <div class="drug-info">
+            <div class="info-row">
+                <span class="info-label">Added by:</span>
+                <span class="info-value">Dr. {{ drug.added_by }}</span>
+            </div>
+            {% if drug.dosage_info %}
+            <div class="info-row">
+                <span class="info-label">Dosage:</span>
+                <span class="info-value">{{ drug.dosage_info[:50] }}{% if drug.dosage_info|length > 50 %}...{% endif %}</span>
+            </div>
+            {% endif %}
+            <div class="info-row">
+                <span class="info-label">Added:</span>
+                <span class="info-value">{{ drug.created_at[:10] if drug.created_at else 'Recently' }}</span>
+            </div>
+        </div>
+        
+        <div class="drug-description">
+            {{ drug.description[:100] if drug.description else 'No description available' }}
+            {% if drug.description and drug.description|length > 100 %}...{% endif %}
+        </div>
+        
+        {% if drug.side_effects and drug.side_effects != 'Not specified' %}
+        <div class="side-effects">
+            <strong>Side effects:</strong> {{ drug.side_effects[:80] }}
+            {% if drug.side_effects|length > 80 %}...{% endif %}
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <!-- Static drug layout (original) -->
+        <div class="drug-rating">
+            <span class="stars">
+                {% set full_stars = (drug.rating)|int %}
+                {% set has_half = (drug.rating - full_stars) >= 0.5 %}
+                {% for i in range(full_stars) %}★{% endfor %}
+                {% if has_half %}☆{% endif %}
+                {% for i in range(5 - full_stars - (1 if has_half else 0)) %}☆{% endfor %}
+            </span>
+            <span class="rating-value">{{ "%.1f"|format(drug.rating) }}</span>
+            <span style="color: var(--gray-500); font-size: 0.75rem;">({{ (drug.rating * 127) // 1 }} reviews)</span>
+        </div>
+        
+        <div class="drug-info">
+            <div class="info-row">
+                <span class="info-label">Drug ID:</span>
+                <span class="info-value">#{{ drug.id }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Category:</span>
+                <span class="info-value">
+                    {% if 'anti' in drug.name.lower() %}Antibiotic
+                    {% elif 'prazole' in drug.name.lower() %}Acid Reducer
+                    {% elif drug.name.lower() in ['aspirin', 'ibuprofen', 'paracetamol'] %}Pain Relief
+                    {% elif 'statin' in drug.name.lower() %}Cholesterol
+                    {% elif drug.name.lower() in ['metformin', 'insulin'] %}Diabetes
+                    {% elif drug.name.lower() in ['sertraline', 'fluoxetine', 'alprazolam'] %}Mental Health
+                    {% else %}General Medicine
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Availability:</span>
+                <span class="info-value" style="color: var(--success-color);">
+                    <i class="fas fa-check-circle"></i> In Stock
+                </span>
+            </div>
+        </div>
+        
+        <div class="drug-actions">
+            <button class="btn btn-primary" style="flex: 1; font-size: 0.875rem;" onclick="viewDrugDetails('{{ drug.id }}', '{{ drug.name }}')">
+                <i class="fas fa-info-circle"></i> View Details
+            </button>
+            <button class="btn btn-secondary" style="font-size: 0.875rem;" onclick="addToComparison('{{ drug.id }}')">
+                <i class="fas fa-plus"></i> Compare
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+<div class="pagination" id="pagination">
+    <!-- Pagination will be generated by JavaScript -->
+</div>
+
+<!-- Drug Details Modal -->
+<div id="drug-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 1rem; max-width: 600px; width: 90%; max-height: 80%; overflow-y: auto;">
+        <div style="padding: 2rem; border-bottom: 1px solid var(--gray-200);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="modal-drug-name" style="margin: 0; color: var(--gray-800);"></h2>
+                <button onclick="closeDrugModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray-500);">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="modal-content" style="padding: 2rem;">
+            <!-- Modal content will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentPage = 1;
+const itemsPerPage = 12;
+let filteredDrugs = Array.from(document.querySelectorAll('.drug-card'));
+
+function applyFilters() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const minRating = parseFloat(document.getElementById('rating-filter').value) || 0;
+    const sortBy = document.getElementById('sort-filter').value;
+    
+    // Filter drugs
+    filteredDrugs = Array.from(document.querySelectorAll('.drug-card')).filter(card => {
+        const name = card.dataset.name;
+        const rating = parseFloat(card.dataset.rating);
+        
+        const matchesSearch = name.includes(searchTerm);
+        const matchesRating = rating >= minRating;
+        
+        return matchesSearch && matchesRating;
+    });
+    
+    // Sort drugs
+    filteredDrugs.sort((a, b) => {
+        switch(sortBy) {
+            case 'name':
+                return a.dataset.name.localeCompare(b.dataset.name);
+            case 'rating':
+                return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+            case 'rating-low':
+                return parseFloat(a.dataset.rating) - parseFloat(b.dataset.rating);
+            default:
+                return 0;
+        }
+    });
+    
+    currentPage = 1;
+    displayDrugs();
+    updatePagination();
+}
+
+function displayDrugs() {
+    const allCards = document.querySelectorAll('.drug-card');
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    
+    // Hide all cards
+    allCards.forEach(card => card.style.display = 'none');
+    
+    // Show filtered cards for current page
+    filteredDrugs.slice(startIndex, endIndex).forEach(card => {
+        card.style.display = 'block';
+    });
+    
+    // Update stats
+    document.getElementById('total-drugs').textContent = filteredDrugs.length;
+}
+
+function updatePagination() {
+    const totalPages = Math.ceil(filteredDrugs.length / itemsPerPage);
+    const pagination = document.getElementById('pagination');
+    
+    pagination.innerHTML = '';
+    
+    // Previous button
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            displayDrugs();
+            updatePagination();
+        }
+    };
+    pagination.appendChild(prevBtn);
+    
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+            const pageBtn = document.createElement('button');
+            pageBtn.textContent = i;
+            pageBtn.className = i === currentPage ? 'active' : '';
+            pageBtn.onclick = () => {
+                currentPage = i;
+                displayDrugs();
+                updatePagination();
+            };
+            pagination.appendChild(pageBtn);
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.style.padding = '0.5rem';
+            pagination.appendChild(ellipsis);
+        }
+    }
+    
+    // Next button
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayDrugs();
+            updatePagination();
+        }
+    };
+    pagination.appendChild(nextBtn);
+}
+
+function viewDrugDetails(drugId, drugName) {
+    // Simulate drug details - in a real app, this would fetch from an API
+    const drugDetails = {
+        name: drugName,
+        id: drugId,
+        description: "This is a comprehensive medication used for various therapeutic purposes. Always consult your healthcare provider before use.",
+        indications: ["Pain relief", "Inflammation reduction", "Fever reduction"],
+        dosage: "Follow healthcare provider instructions",
+        sideEffects: ["Nausea", "Dizziness", "Drowsiness"],
+        contraindications: ["Pregnancy", "Kidney disease", "Heart conditions"],
+        interactions: ["Blood thinners", "Other pain medications"]
+    };
+    
+    document.getElementById('modal-drug-name').textContent = drugDetails.name;
+    
+    document.getElementById('modal-content').innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--gray-800); margin-bottom: 0.5rem;">Description</h4>
+            <p style="color: var(--gray-600);">${drugDetails.description}</p>
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--gray-800); margin-bottom: 0.5rem;">Indications</h4>
+            <ul style="color: var(--gray-600);">
+                ${drugDetails.indications.map(ind => `<li>${ind}</li>`).join('')}
+            </ul>
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--gray-800); margin-bottom: 0.5rem;">Dosage</h4>
+            <p style="color: var(--gray-600);">${drugDetails.dosage}</p>
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--gray-800); margin-bottom: 0.5rem;">Possible Side Effects</h4>
+            <ul style="color: var(--gray-600);">
+                ${drugDetails.sideEffects.map(effect => `<li>${effect}</li>`).join('')}
+            </ul>
+        </div>
+        
+        <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 0.5rem; padding: 1rem;">
+            <h4 style="color: #991b1b; margin-bottom: 0.5rem;">
+                <i class="fas fa-exclamation-triangle"></i> Important Safety Information
+            </h4>
+            <p style="margin: 0; color: #7f1d1d; font-size: 0.875rem;">
+                This information is for educational purposes only. Always consult with a qualified healthcare professional 
+                before starting, stopping, or changing any medication regimen.
+            </p>
+        </div>
+    `;
+    
+    document.getElementById('drug-modal').style.display = 'flex';
+}
+
+function closeDrugModal() {
+    document.getElementById('drug-modal').style.display = 'none';
+}
+
+function addToComparison(drugId) {
+    // Implement comparison functionality
+    alert('Drug added to comparison list! (Feature coming soon)');
+}
+
+// Initialize search functionality
+document.getElementById('search-input').addEventListener('input', function() {
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(applyFilters, 300);
+});
+
+// Initialize display
+displayDrugs();
+updatePagination();
+
+// Set average rating (calculated server-side)
+document.getElementById('avg-rating').textContent = '4.0';
+</script>
+{% endblock %}

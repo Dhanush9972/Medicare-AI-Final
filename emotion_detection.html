@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Emotion Detection{% endblock %}
+{% block content %}
+<div class="glass-container" style="max-width: 800px; margin: auto; text-align: center;">
+    <h2 class="text-gradient">😌 AI Facial Affect Analysis</h2>
+    
+    <div style="position: relative; margin: 30px auto; width: 640px; height: 480px; background: #000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+        <video id="video" width="640" height="480" autoplay muted playsinline></video>
+        <canvas id="canvas" style="position: absolute; top: 0; left: 0;"></canvas>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button onclick="startCamera()" class="btn btn-primary" style="font-size: 1.2em; padding: 12px 30px;">
+            📸 Start Camera & Analyze
+        </button>
+    </div>
+
+    <div id="result" style="margin-top: 20px; font-size: 1.5em; font-weight: bold; color: #2563eb;"></div>
+    <div id="advice" style="color: #64748b; margin-top: 10px;"></div>
+</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
+<script>
+    async function startCamera() {
+        const video = document.getElementById('video');
+        const resDiv = document.getElementById('result');
+        resDiv.innerText = "Loading AI models... Please wait.";
+        
+        try {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
+            await faceapi.nets.faceExpressionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
+            
+            const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+            video.srcObject = stream;
+            resDiv.innerText = "Scanning face...";
+            
+            video.addEventListener('play', () => {
+                const canvas = document.getElementById('canvas');
+                const displaySize = { width: video.width, height: video.height };
+                faceapi.matchDimensions(canvas, displaySize);
+                
+                setInterval(async () => {
+                    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+                    const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                    faceapi.draw.drawDetections(canvas, resizedDetections);
+                    
+                    if (detections.length > 0) {
+                        const expressions = detections[0].expressions;
+                        const max = Object.keys(expressions).reduce((a, b) => expressions[a] > expressions[b] ? a : b);
+                        resDiv.innerText = "Detected Mood: " + max.toUpperCase();
+                        
+                        const adviceMap = {
+                            happy: "Keep up the positive energy!",
+                            sad: "Try a short walk or listen to music.",
+                            angry: "Take deep breaths. 4-7-8 technique.",
+                            neutral: "Good focus state."
+                        };
+                        document.getElementById('advice').innerText = adviceMap[max] || "";
+                    }
+                }, 500);
+            });
+        } catch (err) {
+            resDiv.innerText = "Error: Camera access denied or models failed to load.";
+            console.error(err);
+        }
+    }
+</script>
+{% endblock %}

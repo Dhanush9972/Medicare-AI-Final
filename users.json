@@ -1,0 +1,38 @@
+{
+  "anand": {
+    "id": "5367b24a-59a7-4be6-9f96-4e354858f497",
+    "email": "ankillaanand@gmail.com",
+    "password": "88248187f560f4c1a05f201595b8143e5ff4aa9da61cd3d73273c6eea5e4a667",
+    "user_type": "patient",
+    "created_at": "2025-09-02T13:05:58.947839",
+    "profile": {
+      "age": "25",
+      "gender": "male",
+      "medical_history": []
+    }
+  },
+  "demo_patient": {
+    "id": "b2e48deb-1fcb-49b3-84c4-317a76efc86d",
+    "email": "demo.patient@medicare.com",
+    "password": "d3ad9315b7be5dd53b31a273b3b3aba5defe700808305aa16a3062b76658a791",
+    "user_type": "patient",
+    "created_at": "2025-09-02T13:05:59.058417",
+    "profile": {
+      "age": "30",
+      "gender": "male",
+      "medical_history": []
+    }
+  },
+  "demo_doctor": {
+    "id": "a0116dac-297e-4c8c-b837-999e6b2f35f0",
+    "email": "demo.doctor@medicare.com",
+    "password": "d3ad9315b7be5dd53b31a273b3b3aba5defe700808305aa16a3062b76658a791",
+    "user_type": "healthcare",
+    "created_at": "2025-09-02T13:05:59.059930",
+    "profile": {
+      "age": "45",
+      "gender": "female",
+      "medical_history": []
+    }
+  }
+}

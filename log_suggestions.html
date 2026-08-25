@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Doctor Suggestions - MediCare{% endblock %}
+{% block content %}
+<div class="glass-container container-md">
+    <div class="header-section">
+        <h2 class="text-gradient">💬 Doctor's Advice on Your Logs</h2>
+        <p>Clinical suggestions based on your daily health check-ins.</p>
+    </div>
+
+    {% if suggestions %}
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        {% for sug in suggestions %}
+        <div class="glass-container" style="margin: 0; border-left: 5px solid #10b981; background: linear-gradient(to right, #f0fdf4, white);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                 <strong style="color: #059669; font-size: 1.1em;">📅 Regarding Log Date: {{ sug.log_date }}</strong>
+                 <span style="color: #666; font-size: 0.9em;">Dr. {{ sug.doctor_name }} • {{ sug.created_at }}</span>
+            </div>
+            <p style="font-size: 1.2em; color: #2d3748; font-weight: 600;">"{{ sug.suggestion }}"</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center" style="padding: 50px; border: 3px dashed #ddd; border-radius: 20px; color: #aaa;">
+        <div style="font-size: 4em;">📭</div>
+        <h3>No suggestions yet.</h3>
+        <p>Keep submitting your daily logs so doctors can review them.</p>
+    </div>
+    {% endif %}
+    <div class="text-center" style="margin-top: 30px;">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">⬅️ Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - MediCare AI{% endblock %}
+{% block content %}
+
+<div class="hero-card">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div class="hero-text">
+            <h1 style="margin:0; color:white; font-size: 2.5rem;">Hello, {{ user.full_name }}!</h1>
+            <p style="opacity:0.95; color:white;">
+                {% if user.user_type == 'doctor' %}
+                    Doctor's Portal • Clinical Command Center
+                {% else %}
+                    Patient Portal • Your Personal AI Health Companion
+                {% endif %}
+            </p>
+        </div>
+        <div style="font-size: 3rem; background: rgba(255,255,255,0.2); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+            👋
+        </div>
+    </div>
+</div>
+
+<div class="ai-agent-section" style="margin-bottom: 40px;">
+    <div class="ai-agent-card">
+        <div style="flex: 1;">
+            <h2 style="margin:0; color: #1e40af; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.2em;">🧠</span> Medicare Agentic AI
+            </h2>
+            <p style="color: #64748b; margin-top: 5px;">
+                Autonomous health intelligence. Analyzes your lifestyle & biometrics for real-time insights.
+            </p>
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <a href="{{ url_for('agentic_health_intake') }}" class="btn btn-primary">
+                📊 Check Health Score
+            </a>
+            <a href="{{ url_for('chat_agent') }}" class="btn btn-secondary">
+                💬 Chat with Agent
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if user.user_type == 'doctor' %}
+    
+    <h3 class="section-title">🩺 Clinical Tools</h3>
+    <div class="dashboard-grid">
+        <div onclick="location.href='{{ url_for('video_consult') }}'" class="feature-card">
+            <div class="icon-container">📹</div><h3>Live Consultations</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('patient_logs_list') }}'" class="feature-card">
+            <div class="icon-container">📂</div><h3>Patient Logs</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('manage_questions') }}'" class="feature-card">
+            <div class="icon-container">💬</div><h3>Inquiries</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('doctor_add_drug') }}'" class="feature-card">
+            <div class="icon-container">💊</div><h3>Add New Drug</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('lab_report_checker') }}'" class="feature-card">
+            <div class="icon-container">🔬</div><h3>Report Analyzer</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('doctor_analytics') }}'" class="feature-card">
+            <div class="icon-container">📊</div><h3>Analytics</h3>
+        </div>
+    </div>
+
+{% else %}
+
+    <h3 class="section-title" style="color: #1e40af;">🤖 AI Diagnostics</h3>
+    <div class="dashboard-grid">
+        <div onclick="location.href='{{ url_for('symptom_checker') }}'" class="feature-card">
+            <div class="icon-container">🌡️</div><h3>Symptom Checker</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('lab_report_checker') }}'" class="feature-card">
+            <div class="icon-container">🔬</div><h3>Lab Report AI</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('emotion_detection') }}'" class="feature-card">
+            <div class="icon-container">😌</div><h3>Mood Scanner</h3>
+        </div>
+    </div>
+
+    <h3 class="section-title" style="color: #047857;">⚡ Daily Care</h3>
+    <div class="dashboard-grid">
+        <div onclick="location.href='{{ url_for('daily_checkin') }}'" class="feature-card">
+            <div class="icon-container">📝</div><h3>Daily Check-in</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('drugs_database') }}'" class="feature-card">
+            <div class="icon-container">💊</div><h3>Drug Database</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('price_predictor') }}'" class="feature-card">
+            <div class="icon-container">💰</div><h3>Price Predictor</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('healthy_living') }}'" class="feature-card">
+            <div class="icon-container">🥗</div><h3>Healthy Living</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('view_log_suggestions') }}'" class="feature-card">
+            <div class="icon-container">💡</div><h3>Doctor Feedback</h3>
+        </div>
+    </div>
+
+    <h3 class="section-title" style="color: #b45309;">🏥 Consultation</h3>
+    <div class="dashboard-grid">
+        <div onclick="location.href='{{ url_for('video_consult') }}'" class="feature-card">
+            <div class="icon-container">📹</div><h3>Video Consult</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('ask_doctor') }}'" class="feature-card">
+            <div class="icon-container">👨‍⚕️</div><h3>Ask a Doctor</h3>
+        </div>
+        <div onclick="location.href='{{ url_for('emergency') }}'" class="feature-card emergency-card">
+            <div class="icon-container">🚨</div><h3>Emergency</h3>
+        </div>
+    </div>
+
+{% endif %}
+
+<div style="margin-top: 60px; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0; color: #64748b;">
+    <p style="font-style: italic;">"The greatest wealth is health."</p>
+    <p>&copy; 2025 Medicare AI | Support: 1-800-MED-HELP</p>
+</div>
+
+{% endblock %}

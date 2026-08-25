@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}Answer Patient Question - MediCare{% endblock %}
+
+{% block extra_css %}
+<style>
+    .doctor-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .question-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .question-header {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .question-body {
+        padding: 2rem;
+    }
+    
+    .patient-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .patient-avatar {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .patient-details h4 {
+        margin: 0;
+        color: #374151;
+        font-weight: 600;
+    }
+    
+    .patient-details p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .question-content {
+        background: #f9fafb;
+        border-left: 4px solid #3b82f6;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .symptoms-section {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .response-form {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-control {
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-back {
+        background: #6b7280;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-back:hover {
+        background: #4b5563;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .medical-advice-tips {
+        background: #e0f2fe;
+        border: 1px solid #0ea5e9;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .medical-advice-tips h5 {
+        color: #0369a1;
+        margin-bottom: 1rem;
+    }
+    
+    .medical-advice-tips ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+    
+    .medical-advice-tips li {
+        color: #0c4a6e;
+        margin-bottom: 0.5rem;
+    }
+    
+    .question-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+    
+    .urgency-high { border-left-color: #ef4444; background: #fef2f2; }
+    .urgency-medium { border-left-color: #f59e0b; background: #fffbeb; }
+    .urgency-low { border-left-color: #10b981; background: #f0fdfa; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="doctor-header text-center">
+    <div class="container">
+        <h1>📋 Answer Patient Question</h1>
+        <p>Provide professional medical guidance to help the patient</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Navigation -->
+    <div class="mb-3">
+        <a href="{{ url_for('doctor_manage_questions') }}" class="btn-back">
+            ← Back to Questions
+        </a>
+    </div>
+
+    <!-- Patient Question -->
+    <div class="question-container">
+        <div class="question-header">
+            <div class="patient-info">
+                <div class="patient-avatar">
+                    {{ question.patient_name[0].upper() }}
+                </div>
+                <div class="patient-details">
+                    <h4>{{ question.patient_name }}</h4>
+                    <p>{{ question.patient_email }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-body">
+            <h5>📝 Patient's Question</h5>
+            <div class="question-content">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">{{ question.question }}</p>
+            </div>
+            
+            {% if question.symptoms %}
+            <div class="symptoms-section">
+                <h6 style="margin: 0 0 0.5rem 0; color: #d97706;">⚕️ Reported Symptoms</h6>
+                <p style="margin: 0; font-weight: 500;">{{ question.symptoms }}</p>
+            </div>
+            {% endif %}
+            
+            <div class="question-meta">
+                <span>
+                    <i class="fas fa-clock"></i> 
+                    Asked on {{ question.created_at[:19].replace('T', ' ') if question.created_at else 'Unknown date' }}
+                </span>
+                <span class="badge badge-warning">{{ question.status|title }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Advice Guidelines -->
+    <div class="medical-advice-tips">
+        <h5>🩺 Medical Response Guidelines</h5>
+        <ul>
+            <li>Provide professional, evidence-based medical advice</li>
+            <li>Consider the patient's reported symptoms and medical history</li>
+            <li>Include dosage information if prescribing medications</li>
+            <li>Recommend follow-up care when appropriate</li>
+            <li>Always advise seeking immediate care for emergencies</li>
+        </ul>
+    </div>
+
+    <!-- Response Form -->
+    <div class="response-form">
+        <h4 style="margin-bottom: 1.5rem; color: #374151;">
+            <i class="fas fa-reply"></i> Your Medical Response
+        </h4>
+        
+        <form method="POST" onsubmit="return validateResponse()">
+            <div class="form-group">
+                <label for="response">
+                    <i class="fas fa-user-md"></i> Medical Advice & Recommendations
+                </label>
+                <textarea 
+                    class="form-control" 
+                    id="response" 
+                    name="response" 
+                    rows="8" 
+                    placeholder="Provide your professional medical advice, diagnosis, and treatment recommendations. Include any medications with proper dosages, lifestyle recommendations, and follow-up instructions."
+                    required></textarea>
+                <small class="text-muted">Minimum 50 characters required for a comprehensive response.</small>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="urgency">
+                            <i class="fas fa-exclamation-triangle"></i> Urgency Level
+                        </label>
+                        <select class="form-control" id="urgency" name="urgency">
+                            <option value="low">Low - Routine care</option>
+                            <option value="medium" selected>Medium - Monitor closely</option>
+                            <option value="high">High - Seek immediate care</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="follow_up">
+                            <i class="fas fa-calendar-alt"></i> Follow-up Recommended
+                        </label>
+                        <select class="form-control" id="follow_up" name="follow_up">
+                            <option value="none">No follow-up needed</option>
+                            <option value="1_week">1 week</option>
+                            <option value="2_weeks" selected>2 weeks</option>
+                            <option value="1_month">1 month</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane"></i> Send Medical Response
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function validateResponse() {
+    const response = document.getElementById('response').value;
+    if (response.length < 50) {
+        alert('Please provide a more comprehensive medical response (at least 50 characters).');
+        return false;
+    }
+    
+    if (!response.toLowerCase().includes('recommend') && !response.toLowerCase().includes('suggest') && !response.toLowerCase().includes('advise')) {
+        const confirm = window.confirm('Your response doesn\'t seem to include medical recommendations. Are you sure you want to submit?');
+        if (!confirm) return false;
+    }
+    
+    return true;
+}
+
+// Auto-save draft functionality
+let autoSaveInterval;
+document.getElementById('response').addEventListener('input', function() {
+    clearTimeout(autoSaveInterval);
+    autoSaveInterval = setTimeout(function() {
+        // Auto-save functionality can be implemented here
+        console.log('Draft saved locally');
+    }, 2000);
+});
+</script>
+{% endblock %}

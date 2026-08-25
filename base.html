@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MediCare AI{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="nav-brand">
+            <span style="font-size: 1.8rem;">🧬</span> MediCare AI
+        </a>
+        <ul class="nav-links">
+            {% if 'user_id' in session %}
+                <li><a href="{{ url_for('dashboard') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('profile') }}">👤 Profile</a></li>
+                <li><a href="{{ url_for('logout') }}" style="color: var(--danger);">🚪 Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('home') }}">🏠 Home</a></li>
+                <li><a href="{{ url_for('login') }}">🔑 Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="btn-nav">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span>{% if category=='success' %}✅{% elif category=='error' %}⚠️{% else %}ℹ️{% endif %}</span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

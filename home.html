@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}MediCare AI{% endblock %}
+{% block content %}
+<div style="text-align: center; padding: 100px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 0 0 50px 50px; margin-bottom: 50px;">
+    <h1 style="font-size: 3.5em; margin-bottom: 20px; font-weight: 800;">The Future of Healthcare</h1>
+    <p style="font-size: 1.5em; opacity: 0.9; max-width: 800px; margin: 0 auto 40px;">AI-driven diagnostics, real-time consultations, and personalized health tracking in one platform.</p>
+    
+    <div style="display: flex; gap: 20px; justify-content: center;">
+        <a href="{{ url_for('login') }}" class="btn-primary" style="background: white; color: #667eea; width: auto; padding: 15px 40px;">Login Dashboard</a>
+        <a href="{{ url_for('register') }}" class="btn-primary" style="background: transparent; border: 2px solid white; width: auto; padding: 15px 40px;">Create Account</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <div class="glass-card" style="margin: 0; text-align: center;">
+        <div style="font-size: 3em; margin-bottom: 20px;">🧠</div>
+        <h3>Agentic AI</h3>
+        <p style="color: #666;">Advanced health scoring based on your lifestyle and location.</p>
+    </div>
+    <div class="glass-card" style="margin: 0; text-align: center;">
+        <div style="font-size: 3em; margin-bottom: 20px;">🩺</div>
+        <h3>Telemedicine</h3>
+        <p style="color: #666;">Secure video consultations with top specialists.</p>
+    </div>
+    <div class="glass-card" style="margin: 0; text-align: center;">
+        <div style="font-size: 3em; margin-bottom: 20px;">🔬</div>
+        <h3>Lab AI</h3>
+        <p style="color: #666;">Instant analysis of your medical lab reports.</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+<div class="glass-container" style="max-width: 900px; margin: 40px auto; padding: 40px;">
+    <h2 class="text-gradient" style="text-align: center; font-size: 2.5em; margin-bottom: 10px;">✨ Join Medicare AI</h2>
+    <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Select your role to get started.</p>
+
+    <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 30px;">
+        <button type="button" onclick="selectRole('patient')" id="btn-patient" class="role-btn active" style="padding: 15px 30px; border-radius: 10px; border: 2px solid #2563eb; background: #eff6ff; color: #2563eb; font-weight: bold; cursor: pointer;">
+            👤 I am a Patient
+        </button>
+        <button type="button" onclick="selectRole('doctor')" id="btn-doctor" class="role-btn" style="padding: 15px 30px; border-radius: 10px; border: 2px solid #ddd; background: white; color: #666; font-weight: bold; cursor: pointer;">
+            🩺 I am a Doctor
+        </button>
+    </div>
+
+    <form method="POST">
+        <input type="hidden" name="user_type" id="user_type" value="patient">
+        
+        <div class="grid-2">
+            <div>
+                <label class="form-label">Full Name</label>
+                <input type="text" name="full_name" class="form-control" required placeholder="John Doe">
+            </div>
+            <div>
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" required placeholder="john@example.com">
+            </div>
+            <div>
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" required placeholder="johndoe">
+            </div>
+            <div>
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" required placeholder="••••••••">
+            </div>
+        </div>
+
+        <div id="patient-fields" style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px;">
+            <h4 style="color: #2563eb;">🧬 Health Profile</h4>
+            <div class="grid-2">
+                <div><label class="form-label">Age</label><input type="number" name="age" class="form-control"></div>
+                <div>
+                    <label class="form-label">Gender</label>
+                    <select name="gender" class="form-control">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div><label class="form-label">Height (cm)</label><input type="number" name="height" class="form-control"></div>
+                <div><label class="form-label">Weight (kg)</label><input type="number" name="weight" class="form-control"></div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 30px; font-size: 1.2em; padding: 15px;">🚀 Create Account</button>
+    </form>
+</div>
+
+<script>
+function selectRole(role) {
+    document.getElementById('user_type').value = role;
+    if(role === 'patient') {
+        document.getElementById('btn-patient').style.borderColor = '#2563eb';
+        document.getElementById('btn-patient').style.background = '#eff6ff';
+        document.getElementById('btn-doctor').style.borderColor = '#ddd';
+        document.getElementById('btn-doctor').style.background = 'white';
+        document.getElementById('patient-fields').style.display = 'block';
+    } else {
+        document.getElementById('btn-doctor').style.borderColor = '#2563eb';
+        document.getElementById('btn-doctor').style.background = '#eff6ff';
+        document.getElementById('btn-patient').style.borderColor = '#ddd';
+        document.getElementById('btn-patient').style.background = 'white';
+        document.getElementById('patient-fields').style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
