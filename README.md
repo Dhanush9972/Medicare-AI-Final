@@ -122,4 +122,65 @@ Open your web browser (Chrome/Edge recommended) and navigate to: 👉 http://127
 📜 License & Disclaimer
 This project is a final-year engineering prototype developed for educational purposes. The medical recommendations provided by the AI models are for demonstration only and should not replace professional medical advice.
 
+ ``Note`` In this project we use ollama as LLM model to build ai for responsive chat that run only locally you need to install ollama 3.0 to run this. and if you want to run dynamically without any offline llm you need to use api key such as openai, gemini. to order to do that you need to change the code of file : ("agent_brain.py") to the below code and execute by taking that api the environment variable.
+
+                                        code start from below
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+import os
+import requests
+import json
+
+# 1. The Tool (Symptom Checker Logic)
+def symptom_checker_tool(text):
+    text = text.lower()
+    if "headache" in text and "light" in text:
+        return "⚠️ Possible Migraine. Suggestion: Rest in a dark room and drink water."
+    elif "fever" in text and "shiver" in text:
+        return "⚠️ Possible Viral Infection. Suggestion: Monitor temperature and stay hydrated."
+    elif "chest" in text and "pain" in text:
+        return "🚨 CRITICAL: Possible Heart Issue. Advice: Call Emergency Services immediately."
+    elif "stomach" in text or "pain" in text:
+        return "⚠️ General Pain detected. Suggestion: Consult a doctor if pain persists."
+    else:
+        return None  # No medical advice needed, let the AI chat normally
+
+# 2. The Agent Logic (Manual)
+def query_agent(user_input):
+    # Step A: Check if we need the Medical Tool
+    tool_result = symptom_checker_tool(user_input)
+    
+    if tool_result:
+        return tool_result
+    
+    # Step B: If no medical issue, use an external API (Example: Google Gemini)
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return "Configuration Error: Cloud AI API key is missing on Render settings."
+
+    try:
+        url = f"https://googleapis.com{api_key}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [{
+                "parts": [{"text": f"You are a helpful medical receptionist. The user says: '{user_input}'. Reply briefly and politely."}]
+            }]
+        }
+        
+        response = requests.post(url, headers=headers, json=payload)
+        
+        if response.status_code == 200:
+            # Parse the response safely from Gemini's JSON structure
+            result = response.json()
+            return result['candidates'][0]['content']['parts'][0]['text']
+        else:
+            return f"Error: API returned status code {response.status_code}"
+            
+    except Exception as e:
+        return f"Error connecting to AI: {str(e)}"
+
+# Test it locally
+if __name__ == "__main__":
+    print(query_agent("I have a headache"))
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Developed with ❤️ by Dhanush.R
