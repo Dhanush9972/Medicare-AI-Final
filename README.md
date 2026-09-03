@@ -121,6 +121,15 @@ Open your web browser (Chrome/Edge recommended) and navigate to: 👉 http://127
 📜 License & Disclaimer
 This project is a final-year engineering prototype developed for educational purposes. The medical recommendations provided by the AI models are for demonstration only and should not replace professional medical advice.
 
+
+BEFORE YOU PROCEED (for run locally using local llm)DOWNLOAD ollama and run as administrator and you need to run a command
+
+1. login to ollama and finish the sign up process
+2. GO to command prompt and run this code : ollama run llama3
+3. After finishing download you are good to go to use the chat agent in medicare ai (locally)
+
+For running agent ai using gemini or openai --- Read below 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  ``Note`` In this project we use ollama as LLM model to build ai for responsive chat that run only locally you need to install
  ollama 3.0 to run this. and if you want to run dynamically without any offline llm you need to use api key
  such as openai, gemini. to order to do that you need to change the code of file : ("agent_brain.py") to the below code
